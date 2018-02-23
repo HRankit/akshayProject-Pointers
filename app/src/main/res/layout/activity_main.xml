@@ -25,6 +25,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/roll"
             android:maxLength="4"
+            android:inputType="number"
             android:hint="Enter roll number" />
 
         <TextView

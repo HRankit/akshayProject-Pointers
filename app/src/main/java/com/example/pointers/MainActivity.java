@@ -3,6 +3,7 @@ package com.example.pointers;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     EditText edit_roll, edit_name;
 
     List<Integer> selectedradioButtons;
+    private String name_input_text;
+    private String roll_input_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +50,33 @@ public class MainActivity extends AppCompatActivity {
     public void insert() {
         String se = "", cn = "", daa = "", dp = "", map = "";
 
+        boolean b  = ValidateInput();
+        if (!b){
+            // Stop Execution if Input is not valid
+            return;
+        }
         List<String> marks = process();
 
-        String roll = edit_roll.getText().toString();
-        String name = edit_name.getText().toString();
-
-        Boolean result = myDb.insertData(roll, name, marks.get(0), marks.get(1), marks.get(2), marks.get(3), marks.get(4));
+        Boolean result = myDb.insertData(name_input_text, roll_input_text, marks.get(0), marks.get(1), marks.get(2), marks.get(3), marks.get(4));
         Log.d("MainAct", roll + " " + name + " " + se + " " + cn + " " + daa + " " + dp + " " + map);
 
         if (result) {
             Toast.makeText(this, "Inserted successfully", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "NOT Inserted", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Check if the inputs are not empty. Trim Removes the white spaces.
+    private boolean ValidateInput() {
+
+        roll_input_text = edit_roll.getText().toString().trim();
+        name_input_text = edit_name.getText().toString().trim();
+        if (TextUtils.isEmpty(roll_input_text) || TextUtils.isEmpty(name_input_text)){
+            Toast.makeText(this, "Name and Roll number cannot be empty", Toast.LENGTH_LONG).show();
+            return false;
+        }else{
+            return true;
         }
     }
 
@@ -90,14 +107,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void update() {
-        String roll = edit_roll.getText().toString();
-        String name = edit_name.getText().toString();
+        boolean b  = ValidateInput();
+        if (!b){
+            // Stop Execution if Input is not valid
+            return;
+        }
 
         String se = "", cn = "", daa = "", dp = "", map = "";
 
         List<String> marks = process();
 
-        boolean result = myDb.updateData(roll, name, marks.get(0), marks.get(1), marks.get(2), marks.get(3), marks.get(4));
+        boolean result = myDb.updateData(roll_input_text, name_input_text, marks.get(0), marks.get(1), marks.get(2), marks.get(3), marks.get(4));
         Log.d("MainAct", roll + " " + name + " " + se + " " + cn + " " + daa + " " + dp + " " + map);
 
         if (result) {
